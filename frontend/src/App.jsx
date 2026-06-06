@@ -257,27 +257,28 @@ function App() {
   return (
     <div className="app-shell">
       <main>
-        <section className="hero">
-          <div className="eyebrow">DEEP LEARNING FINAL PROJECT</div>
-          <p>系統會從模型類別中隨機出題，畫圖過程將自動進行即時辨識。</p>
-        </section>
+        <section className="demo-screen">
+          <section className="hero">
+            <div className="eyebrow">DEEP LEARNING FINAL PROJECT</div>
+            <p>系統會從模型類別中隨機出題，畫圖過程將自動進行即時辨識。</p>
+          </section>
 
-        <section className={`challenge-card ${roundStatus}`}>
-          <div>
-            <span className="challenge-label">本回合題目</span>
-            <p>請畫一個</p>
-          </div>
-          <strong>{target || "載入中..."}</strong>
-          <button
-            disabled={!classes.length}
-            onClick={startNewRound}
-            type="button"
-          >
-            換一題
-          </button>
-        </section>
+          <section className={`challenge-card ${roundStatus}`}>
+            <div>
+              <span className="challenge-label">本回合題目</span>
+              <p>請畫一個</p>
+            </div>
+            <strong>{target || "載入中..."}</strong>
+            <button
+              disabled={!classes.length}
+              onClick={startNewRound}
+              type="button"
+            >
+              換一題
+            </button>
+          </section>
 
-        <section className="workspace">
+          <section className="workspace">
           <div className="canvas-panel panel">
             <div className="panel-heading">
               <div>
@@ -394,6 +395,7 @@ function App() {
             </button>
             <span className="shortcut">每次停筆約 0.4 秒後自動更新猜測</span>
           </aside>
+          </section>
         </section>
 
         <section className="explainability-panel panel">
@@ -485,7 +487,7 @@ function App() {
       </main>
 
       <footer>
-        <span>SketchSense © 2026</span>
+        <span>Spencerku © 2026</span>
         <span>MobileNetV2 · PyTorch · React</span>
       </footer>
     </div>

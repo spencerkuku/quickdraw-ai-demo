@@ -143,6 +143,8 @@ function App() {
   const [target, setTarget] = useState("");
   const [roundStatus, setRoundStatus] = useState("drawing");
   const [predictions, setPredictions] = useState([]);
+  const [gradcam, setGradcam] = useState(null);
+  const [analyzedImage, setAnalyzedImage] = useState("");
   const [latency, setLatency] = useState(null);
   const [status, setStatus] = useState("checking");
   const [isLoading, setIsLoading] = useState(false);
@@ -175,6 +177,8 @@ function App() {
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     setHasDrawing(false);
     setPredictions([]);
+    setGradcam(null);
+    setAnalyzedImage("");
     setLatency(null);
     setError("");
     setIsLoading(false);
@@ -201,17 +205,20 @@ function App() {
     requestRef.current = controller;
     setIsLoading(true);
     setError("");
+    const canvasImage = canvasRef.current.toDataURL("image/png");
 
     try {
       const response = await fetch(`${API_URL}/api/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: canvasRef.current.toDataURL("image/png") }),
+        body: JSON.stringify({ image: canvasImage }),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error("辨識服務暫時無法使用");
       const data = await response.json();
       setPredictions(data.predictions);
+      setGradcam(data.gradcam);
+      setAnalyzedImage(canvasImage);
       setLatency(data.latency_ms);
       setStatus("ready");
       if (data.predictions[0]?.label === target) {
@@ -387,6 +394,81 @@ function App() {
             </button>
             <span className="shortcut">每次停筆約 0.4 秒後自動更新猜測</span>
           </aside>
+        </section>
+
+        <section className="explainability-panel panel">
+          <div className="explainability-heading">
+            <div>
+              <span className="step">03</span>
+              <div>
+                <span className="analysis-kicker">MODEL EXPLAINABILITY</span>
+                <h2>Grad-CAM 模型關注區域</h2>
+              </div>
+            </div>
+            <span className="method-badge">
+              <span /> 真實梯度反向傳播
+            </span>
+          </div>
+
+          {gradcam ? (
+            <div className="gradcam-content">
+              <div className="gradcam-comparison">
+                <figure>
+                  <div className="analysis-image">
+                    <img alt="送入模型的原始塗鴉" src={analyzedImage} />
+                  </div>
+                  <figcaption>原始塗鴉</figcaption>
+                </figure>
+                <figure>
+                  <div className="analysis-image heatmap-image">
+                    <img
+                      alt={`模型辨識「${gradcam.target_label}」時的 Grad-CAM 熱力圖`}
+                      src={gradcam.image}
+                    />
+                  </div>
+                  <figcaption>Grad-CAM 疊圖</figcaption>
+                </figure>
+              </div>
+
+              <div className="gradcam-details">
+                <span className="detail-label">本次解釋目標</span>
+                <strong>{gradcam.target_label}</strong>
+                <div className="detail-row">
+                  <span>目標信心</span>
+                  <b>{gradcam.target_confidence.toFixed(1)}%</b>
+                </div>
+                <div className="detail-row">
+                  <span>分析方法</span>
+                  <b>{gradcam.method}</b>
+                </div>
+                <div className="detail-row">
+                  <span>特徵層</span>
+                  <b>{gradcam.layer}</b>
+                </div>
+
+                <div className="heat-legend">
+                  <div className="legend-bar" />
+                  <div>
+                    <span>低關注</span>
+                    <span>高關注</span>
+                  </div>
+                </div>
+
+                <p>
+                  紅色與黃色區域對目前預測的貢獻較高；藍色區域影響較低。
+                  熱力圖由卷積特徵與分類梯度計算，並以筆跡鄰域抑制遠端空白雜訊。
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="gradcam-empty">
+              <span><Icon name="sparkles" size={26} /></span>
+              <div>
+                <strong>等待第一次模型分析</strong>
+                <p>開始作畫後，這裡會顯示 AI 做出判斷時真正關注的筆跡區域。</p>
+              </div>
+            </div>
+          )}
         </section>
 
         <section className="classes-section">

@@ -569,6 +569,211 @@ footer {
   font-size: 10px;
 }
 
+.explainability-panel {
+  margin-top: 22px;
+}
+
+.explainability-heading {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.explainability-heading > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.explainability-heading h2 {
+  margin: 3px 0 0;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.analysis-kicker {
+  color: #8d95a7;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.method-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  color: #667085;
+  border: 1px solid #e2e6ed;
+  border-radius: 99px;
+  background: #fafbfc;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.method-badge > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.gradcam-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(260px, 0.7fr);
+  gap: 28px;
+}
+
+.gradcam-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.gradcam-comparison figure {
+  margin: 0;
+}
+
+.analysis-image {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid #e0e4eb;
+  border-radius: 16px;
+  background:
+    linear-gradient(45deg, #f4f5f7 25%, transparent 25%),
+    linear-gradient(-45deg, #f4f5f7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f4f5f7 75%),
+    linear-gradient(-45deg, transparent 75%, #f4f5f7 75%);
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+
+.analysis-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.heatmap-image {
+  border-color: #cfd5e1;
+  box-shadow: 0 12px 28px rgba(31, 42, 68, 0.1);
+}
+
+.gradcam-comparison figcaption {
+  margin-top: 9px;
+  color: #737c90;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.gradcam-details {
+  padding: 24px;
+  border: 1px solid #e4e7ed;
+  border-radius: 16px;
+  background: #fafbfc;
+}
+
+.detail-label {
+  color: #8d95a7;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.gradcam-details > strong {
+  margin: 7px 0 22px;
+  display: block;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+}
+
+.detail-row {
+  min-height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #e7e9ee;
+  color: #858da0;
+  font-size: 11px;
+}
+
+.detail-row b {
+  color: #343b4b;
+  text-align: right;
+  font-size: 11px;
+}
+
+.heat-legend {
+  margin: 22px 0 18px;
+}
+
+.legend-bar {
+  height: 9px;
+  border-radius: 99px;
+  background: linear-gradient(
+    90deg,
+    #23178c 0%,
+    #2090cc 25%,
+    #4fd674 50%,
+    #f9d22a 75%,
+    #b40426 100%
+  );
+}
+
+.heat-legend > div:last-child {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  color: #9aa1b0;
+  font-size: 9px;
+}
+
+.gradcam-details > p {
+  margin: 0;
+  color: #737c90;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.gradcam-empty {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+  border: 1px dashed #dce0e8;
+  border-radius: 16px;
+  background: #fafbfc;
+}
+
+.gradcam-empty > span {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  color: #6575e8;
+  border-radius: 17px;
+  background: #eef0ff;
+}
+
+.gradcam-empty strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.gradcam-empty p {
+  margin: 0;
+  color: #8b93a5;
+  font-size: 12px;
+}
+
 .classes-section {
   margin: 78px 0 54px;
   padding: 38px 0;
@@ -624,6 +829,10 @@ footer {
 
   .canvas-wrap {
     height: 65vw;
+  }
+
+  .gradcam-content {
+    grid-template-columns: 1fr;
   }
 
   .classes-section {
@@ -686,6 +895,20 @@ footer {
 
   .result-content {
     min-height: 330px;
+  }
+
+  .explainability-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gradcam-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .gradcam-empty {
+    padding: 28px 20px;
+    align-items: flex-start;
   }
 
   .classes-section {

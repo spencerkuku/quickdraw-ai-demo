@@ -15,7 +15,7 @@ from torchvision.models import mobilenet_v2
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODEL_PATH = BASE_DIR / "model.pt"
+MODEL_PATH = BASE_DIR / "quickdraw_20_classes.pt"
 LABELS_PATH = BASE_DIR / "labels.txt"
 IMAGE_SIZE = 28
 GRADCAM_OUTPUT_SIZE = 480
@@ -24,7 +24,7 @@ GRADCAM_INK_RADIUS = 3
 
 
 class SimpleCNN(nn.Module):
-    def __init__(self, num_classes: int = 10):
+    def __init__(self, num_classes: int):
         super().__init__()
         self.model = mobilenet_v2(weights=None, num_classes=num_classes)
         self.model.features[0][0] = nn.Conv2d(
@@ -65,12 +65,32 @@ class PredictionResponse(BaseModel):
 
 def load_labels() -> list[str]:
     with LABELS_PATH.open("r", encoding="utf-8") as file:
-        return [line.strip() for line in file if line.strip()]
+        labels = [line.strip() for line in file if line.strip()]
+
+    if not labels:
+        raise RuntimeError(f"No labels found in {LABELS_PATH.name}")
+    if len(labels) != len(set(labels)):
+        raise RuntimeError(f"Duplicate labels found in {LABELS_PATH.name}")
+    return labels
 
 
 def load_model(labels: list[str]) -> SimpleCNN:
     model = SimpleCNN(num_classes=len(labels))
-    state_dict = torch.load(MODEL_PATH, map_location="cpu")
+    state_dict = torch.load(MODEL_PATH, map_location="cpu", weights_only=True)
+
+    classifier_weight = state_dict.get("model.classifier.1.weight")
+    if classifier_weight is None:
+        raise RuntimeError(
+            f"{MODEL_PATH.name} does not contain a MobileNetV2 classifier"
+        )
+
+    model_class_count = classifier_weight.shape[0]
+    if model_class_count != len(labels):
+        raise RuntimeError(
+            f"Model outputs {model_class_count} classes, but "
+            f"{LABELS_PATH.name} contains {len(labels)} labels"
+        )
+
     model.load_state_dict(state_dict)
     model.eval()
     return model
@@ -258,7 +278,9 @@ def health():
     return {
         "status": "ready",
         "classes": app.state.labels,
+        "class_count": len(app.state.labels),
         "model": "MobileNetV2",
+        "model_file": MODEL_PATH.name,
     }
 
 

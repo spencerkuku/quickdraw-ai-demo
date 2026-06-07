@@ -476,7 +476,7 @@ function App() {
         <section className="classes-section">
           <div>
             <span className="section-label">SUPPORTED CLASSES</span>
-            <h2>模型能辨識的 10 種物件</h2>
+            <h2>模型能辨識的 {classes.length || "載入中"} 種物件</h2>
           </div>
           <div className="class-list">
             {classes.map((label, index) => (

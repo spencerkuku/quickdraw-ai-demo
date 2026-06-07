@@ -60,7 +60,7 @@
 ## 專案架構
 
 ```text
-deeplearn_finalproject/
+quickdraw-ai-demo/
 ├── backend/
 │   ├── __init__.py
 │   └── app.py              # FastAPI 與模型推論
@@ -94,7 +94,7 @@ deeplearn_finalproject/
 
 ```bash
 git clone <your-repository-url>
-cd deeplearn_finalproject
+cd quickdraw-ai-demo
 ```
 
 ### 2. 啟動後端
